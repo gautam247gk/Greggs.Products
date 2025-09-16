@@ -5,6 +5,7 @@ using Greggs.Products.Api.Models;
 using Greggs.Products.Api.DataAccess;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Greggs.Products.Api.Services;
 
 namespace Greggs.Products.Api.Controllers;
 
@@ -13,32 +14,18 @@ namespace Greggs.Products.Api.Controllers;
 public class ProductController : ControllerBase
 {
     private readonly ILogger<ProductController> _logger;
-    private readonly IDataAccess<Product> _productAccess;
-    private const decimal GbpToEurRate = 1.11m;
+    private readonly IProductService _productService;
 
-    public ProductController(ILogger<ProductController> logger, IDataAccess<Product> productAccess)
+    public ProductController(ILogger<ProductController> logger, IProductService productService)
     {
         _logger = logger;
-        _productAccess = productAccess;
+        _productService = productService;
     }
 
     [HttpGet]
     public IEnumerable<Product> Get(int pageStart = 0, int pageSize = 5, string currency = "GBP")
     {
-        var products = _productAccess.List(pageStart, pageSize);
-
-        if (currency.ToUpper() == "EUR")
-        {
-            // Return products with price converted to EUR
-            return products.Select(p => new Product
-            {
-                Name = p.Name,
-                Price = decimal.Round(p.Price * GbpToEurRate, 2)
-            }).ToList();
-        }
-
-        // Default: return products in GBP
-        return products;
+        return _productService.GetProducts(pageStart, pageSize, currency);
     }
 
 
