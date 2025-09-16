@@ -17,6 +17,7 @@ public class Startup
         services.AddSwaggerGen();
 
         services.AddScoped<IDataAccess<Product>, ProductAccess>();
+        services.AddScoped<ICurrencyConverter, StaticCurrencyConverter>();
         services.AddScoped<IProductService, ProductService>();
 
     }
