@@ -15,7 +15,7 @@ public class StaticCurrencyConverter : ICurrencyConverter
     public decimal Convert(decimal amount, string fromCurrency, string toCurrency)
     {
         if (string.Equals(fromCurrency, toCurrency, StringComparison.OrdinalIgnoreCase))
-            return amount;
+            return Math.Round(amount,2);
 
         // Check for supported currencies
         var amountInGbp = amount * (ToGbp.TryGetValue(fromCurrency, out var toGbp) ? toGbp : throw new ArgumentException($"Unsupported currency: {fromCurrency}"));
